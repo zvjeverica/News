@@ -43,6 +43,9 @@ namespace NewsService
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
 
+            services.AddDbContext<NewsletterDBContext>(options =>
+                options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
+
 
             
 
