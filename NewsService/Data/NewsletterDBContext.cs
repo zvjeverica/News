@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+
 namespace NewsService.Data
 {
     public class NewsletterDBContext : DbContext
@@ -16,13 +17,27 @@ namespace NewsService.Data
 
         public DbSet<Person> People { get; set; }
         public DbSet<Topic> Topics { get; set; }
+        public DbSet<Subscription> Subscriptions { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder builder)
         {
-            modelBuilder.Entity<Subscription>()
-                .HasKey(x => new { x.PersonId, x.TopicId });
-        }
+            builder.Entity<Person>().HasKey(q => q.Id);
+            builder.Entity<Topic>().HasKey(q => q.Id);
 
-        
+            builder.Entity<Subscription>().HasKey(q =>
+                new { q.PersonId, q.TopicId });
+
+            builder.Entity<Subscription>()
+                .HasOne(pt => pt.Person)
+                .WithMany(t => t.Subscriptions)
+                .HasForeignKey(pt => pt.PersonId);
+
+            builder.Entity<Subscription>()
+                .HasOne(pt => pt.Topic)
+                .WithMany(t => t.Subscriptions)
+                .HasForeignKey(pt => pt.TopicId);
+
+            base.OnModelCreating(builder);
+        } 
     }
 }

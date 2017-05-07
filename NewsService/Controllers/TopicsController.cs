@@ -34,7 +34,7 @@ namespace NewsService.Controllers
             }
 
             var topic = await _context.Topics
-                .SingleOrDefaultAsync(m => m.TopicId == id);
+                .SingleOrDefaultAsync(m => m.Id == id);
             if (topic == null)
             {
                 return NotFound();
@@ -73,7 +73,7 @@ namespace NewsService.Controllers
                 return NotFound();
             }
 
-            var topic = await _context.Topics.SingleOrDefaultAsync(m => m.TopicId == id);
+            var topic = await _context.Topics.SingleOrDefaultAsync(m => m.Id == id);
             if (topic == null)
             {
                 return NotFound();
@@ -88,7 +88,7 @@ namespace NewsService.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("TopicId,Name")] Topic topic)
         {
-            if (id != topic.TopicId)
+            if (id != topic.Id)
             {
                 return NotFound();
             }
@@ -102,7 +102,7 @@ namespace NewsService.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TopicExists(topic.TopicId))
+                    if (!TopicExists(topic.Id))
                     {
                         return NotFound();
                     }
@@ -125,7 +125,7 @@ namespace NewsService.Controllers
             }
 
             var topic = await _context.Topics
-                .SingleOrDefaultAsync(m => m.TopicId == id);
+                .SingleOrDefaultAsync(m => m.Id == id);
             if (topic == null)
             {
                 return NotFound();
@@ -139,7 +139,7 @@ namespace NewsService.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var topic = await _context.Topics.SingleOrDefaultAsync(m => m.TopicId == id);
+            var topic = await _context.Topics.SingleOrDefaultAsync(m => m.Id == id);
             _context.Topics.Remove(topic);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
@@ -147,7 +147,7 @@ namespace NewsService.Controllers
 
         private bool TopicExists(int id)
         {
-            return _context.Topics.Any(e => e.TopicId == id);
+            return _context.Topics.Any(e => e.Id == id);
         }
     }
 }

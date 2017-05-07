@@ -22,7 +22,7 @@ namespace NewsService.Controllers
         // GET: People
         public async Task<IActionResult> Index()
         {
-            return View(await _context.People.ToListAsync());
+            return View(await _context.People.Include(x => x.Subscriptions).ThenInclude(x => x.Topic).ToListAsync());
         }
 
         // GET: People/Details/5
@@ -34,7 +34,7 @@ namespace NewsService.Controllers
             }
 
             var person = await _context.People
-                .SingleOrDefaultAsync(m => m.PersonId == id);
+                .SingleOrDefaultAsync(m => m.Id == id);
             if (person == null)
             {
                 return NotFound();
@@ -73,7 +73,7 @@ namespace NewsService.Controllers
                 return NotFound();
             }
 
-            var person = await _context.People.SingleOrDefaultAsync(m => m.PersonId == id);
+            var person = await _context.People.SingleOrDefaultAsync(m => m.Id == id);
             if (person == null)
             {
                 return NotFound();
@@ -88,7 +88,7 @@ namespace NewsService.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("PersonId,FirstName,LastName,EMail,Telephone")] Person person)
         {
-            if (id != person.PersonId)
+            if (id != person.Id)
             {
                 return NotFound();
             }
@@ -102,7 +102,7 @@ namespace NewsService.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PersonExists(person.PersonId))
+                    if (!PersonExists(person.Id))
                     {
                         return NotFound();
                     }
@@ -125,7 +125,7 @@ namespace NewsService.Controllers
             }
 
             var person = await _context.People
-                .SingleOrDefaultAsync(m => m.PersonId == id);
+                .SingleOrDefaultAsync(m => m.Id == id);
             if (person == null)
             {
                 return NotFound();
@@ -139,7 +139,7 @@ namespace NewsService.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var person = await _context.People.SingleOrDefaultAsync(m => m.PersonId == id);
+            var person = await _context.People.SingleOrDefaultAsync(m => m.Id == id);
             _context.People.Remove(person);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
@@ -147,7 +147,7 @@ namespace NewsService.Controllers
 
         private bool PersonExists(int id)
         {
-            return _context.People.Any(e => e.PersonId == id);
+            return _context.People.Any(e => e.Id == id);
         }
     }
 }
