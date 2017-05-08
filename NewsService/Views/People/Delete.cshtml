@@ -11,7 +11,6 @@
     <h4>Person</h4>
     <hr />
     <dl class="dl-horizontal">
-        <input type="hidden" asp-for="PersonId" />
         <dt>
             @Html.DisplayNameFor(model => model.FirstName)
         </dt>
@@ -35,6 +34,15 @@
         </dt>
         <dd>
             @Html.DisplayFor(model => model.Telephone)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Subscriptions)
+        </dt>
+        <dd>
+            @foreach (var s in Model.Subscriptions)
+            {
+                @s.Topic.Name <br />
+            }
         </dd>
     </dl>
     

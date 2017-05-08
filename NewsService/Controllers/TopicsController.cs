@@ -54,7 +54,7 @@ namespace NewsService.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TopicId,Name")] Topic topic)
+        public async Task<IActionResult> Create([Bind("Id,Name")] Topic topic)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +86,7 @@ namespace NewsService.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("TopicId,Name")] Topic topic)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Topic topic)
         {
             if (id != topic.Id)
             {

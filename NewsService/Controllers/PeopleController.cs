@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using NewsService.Data;
 using NewsService.Models;
+using NewsService.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace NewsService.Controllers
 {
+    [Authorize]
     public class PeopleController : Controller
     {
         private readonly NewsletterDBContext _context;
@@ -32,21 +35,26 @@ namespace NewsService.Controllers
             {
                 return NotFound();
             }
-
-            var person = await _context.People
+            var person = await _context.People.Include(x => x.Subscriptions).ThenInclude(x => x.Topic)
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (person == null)
             {
                 return NotFound();
             }
-
             return View(person);
         }
 
         // GET: People/Create
         public IActionResult Create()
         {
-            return View();
+            PersonViewModel personViewModel = new PersonViewModel();
+            var allTopicsList = _context.Topics.ToList();
+            personViewModel.AllTopics = allTopicsList.Select(o => new SelectListItem
+            {
+                Text = o.Name,
+                Value = o.Id.ToString(),
+            });
+            return View(personViewModel);
         }
 
         // POST: People/Create
@@ -54,15 +62,20 @@ namespace NewsService.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PersonId,FirstName,LastName,EMail,Telephone")] Person person)
+        public async Task<IActionResult> Create(PersonViewModel personViewModel)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(person);
+                var newTopics = personViewModel.SelectedJobTags;
+                foreach (int newTopic in newTopics)
+                {
+                    personViewModel.Person.Subscriptions.Add(new Subscription() { Person = personViewModel.Person, TopicId = newTopic });
+                }
+                _context.Add(personViewModel.Person);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            return View(person);
+            return View(personViewModel.Person);
         }
 
         // GET: People/Edit/5
@@ -73,12 +86,22 @@ namespace NewsService.Controllers
                 return NotFound();
             }
 
-            var person = await _context.People.SingleOrDefaultAsync(m => m.Id == id);
-            if (person == null)
+            var personViewModel = new PersonViewModel
+            {
+                Person = await _context.People.Include(x => x.Subscriptions).ThenInclude(x => x.Topic).SingleOrDefaultAsync(m => m.Id == id),
+            };               
+            if (personViewModel.Person == null)
             {
                 return NotFound();
             }
-            return View(person);
+            var allTopicsList = _context.Topics.ToList();
+            personViewModel.AllTopics = allTopicsList.Select(o => new SelectListItem
+            {
+                Text = o.Name,
+                Value = o.Id.ToString(),
+            });
+
+            return View(personViewModel);
         }
 
         // POST: People/Edit/5
@@ -86,23 +109,39 @@ namespace NewsService.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("PersonId,FirstName,LastName,EMail,Telephone")] Person person)
+        public async Task<IActionResult> Edit(int id, PersonViewModel personViewModel)
         {
-            if (id != person.Id)
+            if (id != personViewModel.Person.Id)
             {
                 return NotFound();
             }
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(person);
+                    var existingPerson = await _context.People.Include(x => x.Subscriptions).ThenInclude(x => x.Topic).SingleOrDefaultAsync(m => m.Id == personViewModel.Person.Id);
+                    var newTopics = personViewModel.SelectedJobTags;
+                    var deletedTopics = existingPerson.Subscriptions.Where(x => !newTopics.Contains(x.Topic.Id)).ToList();
+                    var addedTopics = newTopics.Except(existingPerson.Subscriptions.Select(o => o.TopicId));
+
+                    foreach (Subscription subscription in deletedTopics)
+                    {
+                        existingPerson.Subscriptions.Remove(subscription);
+                    }
+                    foreach (int newTopic in addedTopics)
+                    {
+                        existingPerson.Subscriptions.Add(new Subscription() { Person = personViewModel.Person, TopicId = newTopic });
+                    }
+                    existingPerson.FirstName = personViewModel.Person.FirstName;
+                    existingPerson.LastName = personViewModel.Person.LastName;
+                    existingPerson.Telephone = personViewModel.Person.Telephone;
+                    existingPerson.EMail = personViewModel.Person.EMail;
+                    _context.Update(existingPerson);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PersonExists(person.Id))
+                    if (!PersonExists(personViewModel.Person.Id))
                     {
                         return NotFound();
                     }
@@ -113,7 +152,7 @@ namespace NewsService.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            return View(person);
+            return View(personViewModel.Person);
         }
 
         // GET: People/Delete/5
@@ -124,13 +163,12 @@ namespace NewsService.Controllers
                 return NotFound();
             }
 
-            var person = await _context.People
+            var person = await _context.People.Include(x => x.Subscriptions).ThenInclude(x => x.Topic)
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (person == null)
             {
                 return NotFound();
             }
-
             return View(person);
         }
 
@@ -144,7 +182,6 @@ namespace NewsService.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
-
         private bool PersonExists(int id)
         {
             return _context.People.Any(e => e.Id == id);

@@ -32,5 +32,6 @@ namespace NewsService.Data
             _context.Add(person);
             _context.SaveChanges();
         }
+
     }
 }

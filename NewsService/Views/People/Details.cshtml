@@ -34,9 +34,18 @@
         <dd>
             @Html.DisplayFor(model => model.Telephone)
         </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Subscriptions)
+        </dt>
+        <dd>
+            @foreach (var s in Model.Subscriptions)
+            {
+                @s.Topic.Name <br />
+            }
+        </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.PersonId">Edit</a> |
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>

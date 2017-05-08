@@ -1,4 +1,4 @@
-@model NewsService.Models.Person
+@model NewsService.ViewModels.PersonViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -11,33 +11,39 @@
         <h4>Person</h4>
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <input type="hidden" asp-for="PersonId" />
+    <input type="hidden" asp-for="Person.Id" />
         <div class="form-group">
-            <label asp-for="FirstName" class="col-md-2 control-label"></label>
+            <label asp-for="Person.FirstName" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="FirstName" class="form-control" />
-                <span asp-validation-for="FirstName" class="text-danger"></span>
+                <input asp-for="Person.FirstName" class="form-control" />
+                <span asp-validation-for="Person.FirstName" class="text-danger"></span>
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="LastName" class="col-md-2 control-label"></label>
+            <label asp-for="Person.LastName" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="LastName" class="form-control" />
-                <span asp-validation-for="LastName" class="text-danger"></span>
+                <input asp-for="Person.LastName" class="form-control" />
+                <span asp-validation-for="Person.LastName" class="text-danger"></span>
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="EMail" class="col-md-2 control-label"></label>
+            <label asp-for="Person.EMail" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="EMail" class="form-control" />
-                <span asp-validation-for="EMail" class="text-danger"></span>
+                <input asp-for="Person.EMail" class="form-control" />
+                <span asp-validation-for="Person.EMail" class="text-danger"></span>
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="Telephone" class="col-md-2 control-label"></label>
+            <label asp-for="Person.Telephone" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="Telephone" class="form-control" />
-                <span asp-validation-for="Telephone" class="text-danger"></span>
+                <input asp-for="Person.Telephone" class="form-control" />
+                <span asp-validation-for="Person.Telephone" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Person.Subscriptions" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                @Html.ListBoxFor(m => m.SelectedJobTags, Model.AllTopics)
             </div>
         </div>
         <div class="form-group">

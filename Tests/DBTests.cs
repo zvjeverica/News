@@ -4,6 +4,7 @@ using NewsService.Models;
 using NewsService.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Tests
 {
@@ -85,5 +86,36 @@ namespace Tests
             Assert.AreEqual(5, person.Subscriptions.ToList()[0].TopicId);
             Assert.AreEqual("topics", person.Subscriptions.ToList()[0].Topic.Name);
         }
-    }
+
+        [TestMethod]
+        public async System.Threading.Tasks.Task UpdatePerson()
+        {
+            var person = await context.People.Include(x => x.Subscriptions).ThenInclude(x => x.Topic).SingleOrDefaultAsync(m => m.Id == 4);
+            var topic = await context.Topics.SingleOrDefaultAsync(m => m.Id == 1);
+
+            List<Topic> newTopics = new List<Topic>();
+            newTopics.Add(topic);
+
+            var deletedTopics = person.Subscriptions.Where(x => !newTopics.Contains(x.Topic));
+            var addedTopics = newTopics.Except(person.Subscriptions.Select(o => o.Topic));
+
+            foreach (Subscription subscription in deletedTopics)
+            {
+                person.Subscriptions.Remove(subscription);
+            }
+            foreach (Topic newTopic in addedTopics)
+            {
+                //if (context.Entry(newTopic).State == EntityState.Detached)
+                //    context.Topics.Attach(newTopic);
+                person.Subscriptions.Add(new Subscription() { Person = person, Topic = newTopic });
+            }
+            context.SaveChanges();
+
+        }
+
+
+
+
+
+        }
 }
