@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `sql11172899` /*!40100 DEFAULT CHARACTER SET latin1 */;
+USE `sql11172899`;
 -- MySQL dump 10.13  Distrib 5.7.17, for Win64 (x86_64)
 --
 -- Host: sql11.freemysqlhosting.net    Database: sql11172899
@@ -167,6 +169,20 @@ CREATE TABLE `People` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `Topics`
+--
+
+DROP TABLE IF EXISTS `Topics`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Topics` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Subscriptions`
 --
 
@@ -181,20 +197,6 @@ CREATE TABLE `Subscriptions` (
   CONSTRAINT `Person` FOREIGN KEY (`PersonId`) REFERENCES `People` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `Topic` FOREIGN KEY (`TopicId`) REFERENCES `Topics` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Topics`
---
-
-DROP TABLE IF EXISTS `Topics`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Topics` (
-  `Id` int(11) NOT NULL AUTO_INCREMENT,
-  `Name` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -220,3 +222,4 @@ CREATE TABLE `__EFMigrationsHistory` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
+-- Dump completed on 2017-05-09 17:56:54
