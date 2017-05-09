@@ -66,7 +66,7 @@ namespace NewsService.Controllers
         {
             if (ModelState.IsValid)
             {
-                var newTopics = personViewModel.SelectedJobTags;
+                var newTopics = personViewModel.SelectedTopics;
                 foreach (int newTopic in newTopics)
                 {
                     personViewModel.Person.Subscriptions.Add(new Subscription() { Person = personViewModel.Person, TopicId = newTopic });
@@ -120,7 +120,7 @@ namespace NewsService.Controllers
                 try
                 {
                     var existingPerson = await _context.People.Include(x => x.Subscriptions).ThenInclude(x => x.Topic).SingleOrDefaultAsync(m => m.Id == personViewModel.Person.Id);
-                    var newTopics = personViewModel.SelectedJobTags;
+                    var newTopics = personViewModel.SelectedTopics;
                     var deletedTopics = existingPerson.Subscriptions.Where(x => !newTopics.Contains(x.Topic.Id)).ToList();
                     var addedTopics = newTopics.Except(existingPerson.Subscriptions.Select(o => o.TopicId));
 

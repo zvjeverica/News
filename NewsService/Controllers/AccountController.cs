@@ -54,6 +54,42 @@ namespace NewsService.Controllers
             return View();
         }
 
+
+        //POST: /Account/LoginAPI
+        [Produces("application/json")]
+        [HttpPost("api/Login")]
+        [AllowAnonymous]
+        public async Task<IActionResult> LoginAPI([FromBody] Credentials credentials)
+        {
+            var Email = credentials.Email;
+            var Password = credentials.Password;
+            if (Email != null && Password != null)
+            {
+                var result = await _signInManager.PasswordSignInAsync(Email, Password, false, lockoutOnFailure: false);
+                if (result.Succeeded)
+                {
+                    _logger.LogInformation(1, "User logged in.");
+                    return Ok();
+                }
+            }
+            return BadRequest();
+        }
+
+        public class Credentials
+        {
+            public string Email { get; set; }
+            public string Password { get; set; }
+        }
+
+        // POST: /Account/Logout
+        [HttpPost("api/Logout")]
+        public async Task<IActionResult> LogoutAPI()
+        {
+            await _signInManager.SignOutAsync();
+            _logger.LogInformation(4, "User logged out.");
+            return Ok();
+        }
+
         //
         // POST: /Account/Login
         [HttpPost]
