@@ -243,6 +243,30 @@ INSERT INTO `People` VALUES (3,'Blah','Meh','meh@blah.com','7777-444'),(4,'First
 UNLOCK TABLES;
 
 --
+-- Table structure for table `Topics`
+--
+
+DROP TABLE IF EXISTS `Topics`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Topics` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Topics`
+--
+
+LOCK TABLES `Topics` WRITE;
+/*!40000 ALTER TABLE `Topics` DISABLE KEYS */;
+INSERT INTO `Topics` VALUES (1,'Ducks'),(2,'Cats'),(9,'Giraffes'),(10,'Pigs'),(11,'Elephants'),(12,'Squirrels'),(13,'Cows'),(14,'Fish'),(15,'Dogs');
+/*!40000 ALTER TABLE `Topics` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `Subscriptions`
 --
 
@@ -267,30 +291,6 @@ LOCK TABLES `Subscriptions` WRITE;
 /*!40000 ALTER TABLE `Subscriptions` DISABLE KEYS */;
 INSERT INTO `Subscriptions` VALUES (4,1),(4,2),(19,1),(19,2),(19,12),(20,9),(21,1),(21,2),(21,12),(21,14),(22,15),(23,10),(23,13),(23,14),(3,1);
 /*!40000 ALTER TABLE `Subscriptions` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `Topics`
---
-
-DROP TABLE IF EXISTS `Topics`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Topics` (
-  `Id` int(11) NOT NULL AUTO_INCREMENT,
-  `Name` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `Topics`
---
-
-LOCK TABLES `Topics` WRITE;
-/*!40000 ALTER TABLE `Topics` DISABLE KEYS */;
-INSERT INTO `Topics` VALUES (1,'Ducks'),(2,'Cats'),(9,'Giraffes'),(10,'Pigs'),(11,'Elephants'),(12,'Squirrels'),(13,'Cows'),(14,'Fish'),(15,'Dogs');
-/*!40000 ALTER TABLE `Topics` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
