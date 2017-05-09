@@ -14,44 +14,49 @@
             <img src="~/images/banner1.svg" alt="ASP.NET" class="img-responsive" />
             <div class="carousel-caption" role="option">
                 <p>
-                    Learn how to build ASP.NET apps that can run anywhere.
-                    <a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkID=525028&clcid=0x409">
-                        Learn More
-                    </a>
+                    Hello Agrivi!
                 </p>
+                <p>
+                    You need to login to get started.
+                </p>
+                    <a class="btn btn-default" asp-area="" asp-controller="People" asp-action="Index">
+                        Get started
+                    </a>
+                
             </div>
         </div>
         <div class="item">
             <img src="~/images/banner2.svg" alt="Visual Studio" class="img-responsive" />
             <div class="carousel-caption" role="option">
                 <p>
-                    There are powerful new features in Visual Studio for building modern web apps.
-                    <a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkID=525030&clcid=0x409">
-                        Learn More
+                    The web application lets you view, create, edit or delete people (subscribers).
+                    </p>
+                    <a class="btn btn-default" asp-area="" asp-controller="People" asp-action="Index">
+                        Manage people
                     </a>
-                </p>
             </div>
         </div>
         <div class="item">
             <img src="~/images/banner3.svg" alt="Package Management" class="img-responsive" />
             <div class="carousel-caption" role="option">
                 <p>
-                    Bring in libraries from NuGet, Bower, and npm, and automate tasks using Grunt or Gulp.
-                    <a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkID=525029&clcid=0x409">
-                        Learn More
-                    </a>
+                    For testing purposes the application also lets you add, remove or edit topics.
                 </p>
+                    <a class="btn btn-default" asp-area="" asp-controller="Topics" asp-action="Index">
+                        Manage topics
+                    </a>
+                
             </div>
         </div>
         <div class="item">
             <img src="~/images/banner4.svg" alt="Microsoft Azure" class="img-responsive" />
             <div class="carousel-caption" role="option">
                 <p>
-                    Learn how Microsoft's Azure cloud platform allows you to build, deploy, and scale web apps.
-                    <a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkID=525027&clcid=0x409">
-                        Learn More
-                    </a>
+                    Some data can also be retreived in JSON format using the API.
                 </p>
+                    <a class="btn btn-default" asp-area="" asp-controller="Home" asp-action="Api">
+                        Learn more
+                    </a>
             </div>
         </div>
     </div>
@@ -67,42 +72,37 @@
 
 <div class="row">
     <div class="col-md-3">
-        <h2>Application uses</h2>
+        <h2>Database</h2>
         <ul>
-            <li>Sample pages using ASP.NET Core MVC</li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=518004">Bower</a> for managing client-side libraries</li>
-            <li>Theming using <a href="https://go.microsoft.com/fwlink/?LinkID=398939">Bootstrap</a></li>
+            <li>This application uses the mySQL database to store user and resource data</li>
+            <li>Current database has been hosted freely thanks to  <a href="https://www.freemysqlhosting.net">www.freemysqlhosting.net</a> with a size limitation of 5MB</li>
         </ul>
     </div>
     <div class="col-md-3">
-        <h2>How to</h2>
+        <h2>Web Application</h2>
         <ul>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=398600">Add a Controller and View</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=699315">Manage User Secrets using Secret Manager.</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=699316">Use logging to log a message.</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=699317">Add packages using NuGet.</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=699318">Add client packages using Bower.</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=699319">Target development, staging or production environment.</a></li>
+            <li>This is an ASP.NET Core Web Application targeting .NET Framework 4.6 </li>
+            <li>It uses <a href="https://docs.microsoft.com/en-us/ef/core/">Entity Framework Core</a> v1.1.1 for object-relational mapping</li>
+            <li><a href="https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity">ASP.NET Core Identity</a> is used to manage authentification</li>
+            <li>It was build using Visual Studio 2017</li>
         </ul>
     </div>
     <div class="col-md-3">
-        <h2>Overview</h2>
+        <h2>Web API</h2>
         <ul>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=518008">Conceptual overview of what is ASP.NET Core</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=699320">Fundamentals of ASP.NET Core such as Startup and middleware.</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=398602">Working with Data</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=398603">Security</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=699321">Client side development</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=699322">Develop on different platforms</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=699323">Read more on the documentation site</a></li>
+            <li>Web API is built upon the MVC Web Application</li>
+            <li>Returns JSON-formatted data</li>
+            <li>Uses the same authentification as the Web Application</li>
         </ul>
     </div>
     <div class="col-md-3">
-        <h2>Run & Deploy</h2>
+        <h2>Replication</h2>
         <ul>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=517851">Run your app</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=517853">Run tools such as EF migrations and more</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=398609">Publish to Microsoft Azure Web Apps</a></li>
+            <li>You can get both the Web Application & Web API source code at <a href="https://go.microsoft.com/fwlink/?LinkID=517851">GitHub</a></li>
+            <li>To replicate the database you can use dump file <a asp-area="" asp-controller="Home" asp-action="GetStructureAndData">with sample data</a> or
+                <a asp-area="" asp-controller="Home" asp-action="GetStructure">without sample data (shema only)</a>
+            </li>
+            <li>If you're switching to diffrent database you'll need to edit the DefaultConnection string in appsettings.json</li>
         </ul>
     </div>
 </div>

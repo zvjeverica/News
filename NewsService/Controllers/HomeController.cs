@@ -27,6 +27,23 @@ namespace NewsService.Controllers
             return View();
         }
 
+        public IActionResult Api()
+        {
+            ViewData["Message"] = "Application Programming Interface.";
+
+            return View();
+        }
+
+        public ActionResult GetStructure()
+        {
+            return File("files/StructureOnly.sql", "application/sql", "Structure.sql");
+        }
+
+        public ActionResult GetStructureAndData()
+        {
+            return File("files/StructureAndData.sql", "application/sql", "StructureAndData.sql");
+        }
+
         public IActionResult Error()
         {
             return View();

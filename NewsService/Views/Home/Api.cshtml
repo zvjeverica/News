@@ -1,0 +1,29 @@
+﻿@{
+    ViewData["Title"] = "API";
+}
+<h2>@ViewData["Title"].</h2>
+<h3>@ViewData["Message"]</h3>
+
+<p>
+    The API allows you to retrieve some of the data in a JSON format. It allows:
+</p>
+<ul>
+    <li>Fetching people by their <b>ids</b></li>
+    <li>Fetching a <b>list of subscribers</b> for certain <b>topic(s)</b></li>
+</ul>
+<p>The application requires a user to be authentificated prior to accessing data. The user can login to the application by sending a HTTP request to the server:</p>
+<ul>
+    <li>Create request with header <code>Content-Type : application/json</code></li>
+    <li>Add credentials in the body of the request as JSON:
+        <code>{"Email":"YourEmail@Here.com","Password":"YourPassword"}</code>
+    </li>
+    <li>Send request to the server
+    <code>POST /api/Login</code>
+    </li>
+</ul>
+<p>The password is being sent plainly in the body of the HTTP request. This is a security threat. This server (both Web Application and Web API) can and <b>should be setup using SSL</b>. The server responds 200 OK if the user was successfuly logged it; 400 Bad Request otherwise.</p>
+<p>To fetch a certain person by id use: <code>GET /api/Person/id</code>. If a person with such id does not exist the server returns 404 Not Found. You can also use <code>GET /api/Persons</code> if you want a full list of all the people in the database</p>
+<p>List of subscribers for a certain topic (or more topics) can be fetched from <code>GET /api/Subscribers?topic=name_of_topic</code>. You can also query for multiple topics like this: <code>GET /api/Subscribers?topic=ducks&amp;topic=cats</code> - this will yield people who are either subscribed to the 
+    topic <i>ducks</i> or to the topic <i>cats</i> or both of them. The search is case insensitive.</p>
+<p>Finally, a user can logout by sending an empty request to <code>POST /api/Logout</code></p>
+<p>If at any point a user attempts to access data while not being logged it the server will produce a <a href="https://httpstatuses.com/418" >418 I'm a teapot</a> response.</p>

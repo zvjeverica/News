@@ -55,7 +55,7 @@ namespace NewsService.Controllers
         }
 
 
-        //POST: /Account/LoginAPI
+        //POST: /api/Login
         [Produces("application/json")]
         [HttpPost("api/Login")]
         [AllowAnonymous]
@@ -71,6 +71,7 @@ namespace NewsService.Controllers
                     _logger.LogInformation(1, "User logged in.");
                     return Ok();
                 }
+                else return BadRequest("Wrong credentials");
             }
             return BadRequest();
         }
@@ -81,7 +82,7 @@ namespace NewsService.Controllers
             public string Password { get; set; }
         }
 
-        // POST: /Account/Logout
+        // POST: /api/Logout
         [HttpPost("api/Logout")]
         public async Task<IActionResult> LogoutAPI()
         {

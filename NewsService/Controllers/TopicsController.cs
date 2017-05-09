@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using NewsService.Data;
 using NewsService.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace NewsService.Controllers
 {
+    [Authorize]
     public class TopicsController : Controller
     {
         private readonly NewsletterDBContext _context;
