@@ -8,10 +8,6 @@
   <PropertyGroup>
     <UserSecretsId>aspnet-NewsService-c29b67d7-8a36-461f-a11d-66fa10d6d23b</UserSecretsId>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Content Remove="wwwroot/files\StructureAndData.sql" />
-  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.1" />
@@ -37,12 +33,12 @@
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="wwwroot/files\StructureAndData.sql" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Data\DBRepository.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Update="wwwroot/files\StructureAndData.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="wwwroot/files\StructureOnly.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
