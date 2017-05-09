@@ -34,24 +34,29 @@ namespace NewsService.Controllers
                               join s in _context.Subscriptions on p.Id equals s.PersonId
                               join t in _context.Topics on s.TopicId equals t.Id
                               where topic.Any(x => x.Equals(t.Name, StringComparison.OrdinalIgnoreCase))
-                              select p).Distinct();
+                              select p).Include(x => x.Subscriptions).ThenInclude(x => x.Topic).Distinct();
 
                 if (people == null)
                 {
                     return NotFound();
                 }
-                return Ok(people);
+                return Ok(PeopleToJson(people));
             }
             else return StatusCode(418);
 
         }
 
-        // GET: api/Person
+        // GET: api/Persons
         [HttpGet("Persons")]
         public IActionResult GetPeople()
         {
             if (User.Identity.IsAuthenticated)
-                return Ok(_context.People);
+            {
+                var people = _context.People.Include(x => x.Subscriptions).ThenInclude(x => x.Topic);
+                
+                return Ok(PeopleToJson(people));
+            }
+                
             else return StatusCode(418);
         }
 
@@ -76,6 +81,22 @@ namespace NewsService.Controllers
                 return Ok(person.ToJson());
             }
             else return StatusCode(418);
+        }
+
+        private string PeopleToJson (IEnumerable<Person> people)
+        {
+            //If serilization doesn't want to be your friend you have to do it yourself
+            string json = "[";
+            bool any = false;
+            foreach (Person person in people)
+            {
+                json += person.ToJson() + ", ";
+                any = true;
+            }
+            if (any)
+                json = json.Substring(0, json.Length - 2) + "]";
+            else json = "[]";
+            return json;
         }
     }
 }
