@@ -15,17 +15,18 @@ namespace NewsService.Controllers
     [Authorize]
     public class PeopleController : Controller
     {
-        private readonly NewsletterDBContext _context;
+        //private readonly NewsletterDBContext _context;
+        private DBRepository _repository;
 
         public PeopleController(NewsletterDBContext context)
         {
-            _context = context;    
+            _repository = new DBRepository(context);    
         }
 
         // GET: People
         public async Task<IActionResult> Index()
         {
-            return View(await _context.People.Include(x => x.Subscriptions).ThenInclude(x => x.Topic).ToListAsync());
+            return View(await _repository.GetAllPeople());
         }
 
         // GET: People/Details/5
@@ -35,8 +36,7 @@ namespace NewsService.Controllers
             {
                 return NotFound();
             }
-            var person = await _context.People.Include(x => x.Subscriptions).ThenInclude(x => x.Topic)
-                .SingleOrDefaultAsync(m => m.Id == id);
+            var person = await _repository.GetPersonById(id.Value);
             if (person == null)
             {
                 return NotFound();
@@ -45,10 +45,10 @@ namespace NewsService.Controllers
         }
 
         // GET: People/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             PersonViewModel personViewModel = new PersonViewModel();
-            var allTopicsList = _context.Topics.ToList();
+            var allTopicsList = await _repository.GetAllTopics();
             personViewModel.AllTopics = allTopicsList.Select(o => new SelectListItem
             {
                 Text = o.Name,
@@ -66,13 +66,7 @@ namespace NewsService.Controllers
         {
             if (ModelState.IsValid)
             {
-                var newTopics = personViewModel.SelectedTopics;
-                foreach (int newTopic in newTopics)
-                {
-                    personViewModel.Person.Subscriptions.Add(new Subscription() { Person = personViewModel.Person, TopicId = newTopic });
-                }
-                _context.Add(personViewModel.Person);
-                await _context.SaveChangesAsync();
+                await Task.Run(() => _repository.CreatePerson(personViewModel.Person, personViewModel.SelectedTopics));
                 return RedirectToAction("Index");
             }
             return View(personViewModel.Person);
@@ -85,22 +79,20 @@ namespace NewsService.Controllers
             {
                 return NotFound();
             }
-
             var personViewModel = new PersonViewModel
             {
-                Person = await _context.People.Include(x => x.Subscriptions).ThenInclude(x => x.Topic).SingleOrDefaultAsync(m => m.Id == id),
+                Person = await _repository.GetPersonById(id.Value),
             };               
             if (personViewModel.Person == null)
             {
                 return NotFound();
             }
-            var allTopicsList = _context.Topics.ToList();
+            var allTopicsList = await _repository.GetAllTopics();
             personViewModel.AllTopics = allTopicsList.Select(o => new SelectListItem
             {
                 Text = o.Name,
                 Value = o.Id.ToString(),
             });
-
             return View(personViewModel);
         }
 
@@ -117,40 +109,12 @@ namespace NewsService.Controllers
             }
             if (ModelState.IsValid)
             {
-                try
+                if (await _repository.EditPerson(personViewModel.Person, personViewModel.SelectedTopics))
                 {
-                    var existingPerson = await _context.People.Include(x => x.Subscriptions).ThenInclude(x => x.Topic).SingleOrDefaultAsync(m => m.Id == personViewModel.Person.Id);
-                    var newTopics = personViewModel.SelectedTopics;
-                    var deletedTopics = existingPerson.Subscriptions.Where(x => !newTopics.Contains(x.Topic.Id)).ToList();
-                    var addedTopics = newTopics.Except(existingPerson.Subscriptions.Select(o => o.TopicId));
-
-                    foreach (Subscription subscription in deletedTopics)
-                    {
-                        existingPerson.Subscriptions.Remove(subscription);
-                    }
-                    foreach (int newTopic in addedTopics)
-                    {
-                        existingPerson.Subscriptions.Add(new Subscription() { Person = personViewModel.Person, TopicId = newTopic });
-                    }
-                    existingPerson.FirstName = personViewModel.Person.FirstName;
-                    existingPerson.LastName = personViewModel.Person.LastName;
-                    existingPerson.Telephone = personViewModel.Person.Telephone;
-                    existingPerson.EMail = personViewModel.Person.EMail;
-                    _context.Update(existingPerson);
-                    await _context.SaveChangesAsync();
+                    return RedirectToAction("Index");
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PersonExists(personViewModel.Person.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction("Index");
+                else
+                    return NotFound();
             }
             return View(personViewModel.Person);
         }
@@ -162,9 +126,7 @@ namespace NewsService.Controllers
             {
                 return NotFound();
             }
-
-            var person = await _context.People.Include(x => x.Subscriptions).ThenInclude(x => x.Topic)
-                .SingleOrDefaultAsync(m => m.Id == id);
+            var person = await _repository.GetPersonById(id.Value);
             if (person == null)
             {
                 return NotFound();
@@ -177,14 +139,9 @@ namespace NewsService.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var person = await _context.People.SingleOrDefaultAsync(m => m.Id == id);
-            _context.People.Remove(person);
-            await _context.SaveChangesAsync();
+            await Task.Run(() => _repository.DeletePerson(id));
             return RedirectToAction("Index");
         }
-        private bool PersonExists(int id)
-        {
-            return _context.People.Any(e => e.Id == id);
-        }
+
     }
 }

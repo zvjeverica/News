@@ -17,11 +17,12 @@ namespace NewsService.Controllers
     [Route("api")]
     public class APIController : Controller
     {
-        private readonly NewsletterDBContext _context;
+        //private readonly NewsletterDBContext _context;
+        private DBRepository _repository;
 
         public APIController(NewsletterDBContext context)
         {
-            _context = context;
+            _repository = new DBRepository(context);
         }
 
         //GET: api/Subscribers?topic="meh"&topic="bla"
@@ -30,33 +31,28 @@ namespace NewsService.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                var people = (from p in _context.People
-                              join s in _context.Subscriptions on p.Id equals s.PersonId
-                              join t in _context.Topics on s.TopicId equals t.Id
-                              where topic.Any(x => x.Equals(t.Name, StringComparison.OrdinalIgnoreCase))
-                              select p).Include(x => x.Subscriptions).ThenInclude(x => x.Topic).Distinct();
+                var people = _repository.GetSubscribers(topic);
 
                 if (people == null)
                 {
                     return NotFound();
                 }
-                return Ok(PeopleToJson(people));
+                return Ok(people);
             }
             else return StatusCode(418);
-
         }
 
         // GET: api/Persons
         [HttpGet("Persons")]
-        public IActionResult GetPeople()
+        public async Task<IActionResult> GetPeopleAsync()
         {
             if (User.Identity.IsAuthenticated)
             {
-                var people = _context.People.Include(x => x.Subscriptions).ThenInclude(x => x.Topic);
-                
-                return Ok(PeopleToJson(people));
+                var people = await _repository.GetAllPeople();
+
+                return Ok(people);
             }
-                
+
             else return StatusCode(418);
         }
 
@@ -71,32 +67,15 @@ namespace NewsService.Controllers
                     return BadRequest(ModelState);
                 }
 
-                var person = await _context.People.Include(x => x.Subscriptions).ThenInclude(x => x.Topic).SingleOrDefaultAsync(m => m.Id == id);
+                var person = await _repository.GetPersonById(id);
 
                 if (person == null)
                 {
                     return NotFound();
                 }
-
-                return Ok(person.ToJson());
+                return Ok(person);
             }
             else return StatusCode(418);
-        }
-
-        private string PeopleToJson (IEnumerable<Person> people)
-        {
-            //If serilization doesn't want to be your friend you have to do it yourself
-            string json = "[";
-            bool any = false;
-            foreach (Person person in people)
-            {
-                json += person.ToJson() + ", ";
-                any = true;
-            }
-            if (any)
-                json = json.Substring(0, json.Length - 2) + "]";
-            else json = "[]";
-            return json;
         }
     }
 }

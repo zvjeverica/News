@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace NewsService.Models
 {
     [DataContract]
-    public class Person
+    public class Person : ISerializable
     {
         [Key]
         [DataMember]
@@ -37,24 +37,21 @@ namespace NewsService.Models
 
         public virtual ICollection<Subscription> Subscriptions { get; set; }
 
-        [DataMember (EmitDefaultValue = false)]
-        private IList<string> Topics;
+        //[DataMember (EmitDefaultValue = false)]
+        //private IList<string> Topics;
         public Person()
         {
             this.Subscriptions = new HashSet<Subscription>();
         }
 
-        public string ToJson()
+        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            Topics = Subscriptions.Select(o => o.Topic.Name).ToList();
-            MemoryStream stream = new MemoryStream();
-            DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(Person));
-
-            ser.WriteObject(stream, this);
-
-            stream.Position = 0;
-            StreamReader sr = new StreamReader(stream);
-            return sr.ReadToEnd();
-        }            
+            info.AddValue("Id", Id);
+            info.AddValue("FirstName", FirstName);
+            info.AddValue("LastName", LastName);
+            info.AddValue("EMail", EMail);
+            info.AddValue("Telephone", Telephone);
+            info.AddValue("Topics", Subscriptions.Select(o => o.Topic.Name).ToList());
+        }
     }
 }

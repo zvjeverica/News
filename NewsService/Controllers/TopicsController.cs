@@ -14,17 +14,18 @@ namespace NewsService.Controllers
     [Authorize]
     public class TopicsController : Controller
     {
-        private readonly NewsletterDBContext _context;
+        //private readonly NewsletterDBContext _context;
+        private DBRepository _repository;
 
         public TopicsController(NewsletterDBContext context)
         {
-            _context = context;    
+            _repository = new DBRepository(context);    
         }
 
         // GET: Topics
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Topics.ToListAsync());
+            return View(await _repository.GetAllTopics());
         }
 
         // GET: Topics/Details/5
@@ -35,8 +36,7 @@ namespace NewsService.Controllers
                 return NotFound();
             }
 
-            var topic = await _context.Topics
-                .SingleOrDefaultAsync(m => m.Id == id);
+            var topic = await _repository.GetTopicById(id.Value);
             if (topic == null)
             {
                 return NotFound();
@@ -60,8 +60,7 @@ namespace NewsService.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(topic);
-                await _context.SaveChangesAsync();
+                await Task.Run(() => _repository.CreateTopic(topic));
                 return RedirectToAction("Index");
             }
             return View(topic);
@@ -75,7 +74,7 @@ namespace NewsService.Controllers
                 return NotFound();
             }
 
-            var topic = await _context.Topics.SingleOrDefaultAsync(m => m.Id == id);
+            var topic = await _repository.GetTopicById(id.Value);
             if (topic == null)
             {
                 return NotFound();
@@ -97,23 +96,9 @@ namespace NewsService.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(topic);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TopicExists(topic.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction("Index");
+                if (await _repository.EditTopic(topic))
+                    return RedirectToAction("Index");
+                else return NotFound();
             }
             return View(topic);
         }
@@ -126,8 +111,7 @@ namespace NewsService.Controllers
                 return NotFound();
             }
 
-            var topic = await _context.Topics
-                .SingleOrDefaultAsync(m => m.Id == id);
+            var topic = await _repository.GetTopicById(id.Value);
             if (topic == null)
             {
                 return NotFound();
@@ -141,15 +125,8 @@ namespace NewsService.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var topic = await _context.Topics.SingleOrDefaultAsync(m => m.Id == id);
-            _context.Topics.Remove(topic);
-            await _context.SaveChangesAsync();
+            await Task.Run(() => _repository.DeleteTopic(id));
             return RedirectToAction("Index");
-        }
-
-        private bool TopicExists(int id)
-        {
-            return _context.Topics.Any(e => e.Id == id);
         }
     }
 }
