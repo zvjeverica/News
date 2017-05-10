@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NewsService.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BusinessLogic.Models;
 
 
-namespace NewsService.Data
+namespace BusinessLogic.Data
 {
     public class NewsletterDBContext : DbContext
     {

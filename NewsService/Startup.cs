@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using NewsService.Data;
 using NewsService.Models;
 using NewsService.Services;
+using BusinessLogic.Data;
 
 namespace NewsService
 {

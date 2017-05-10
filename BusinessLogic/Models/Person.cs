@@ -7,7 +7,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Threading.Tasks;
 
-namespace NewsService.Models
+namespace BusinessLogic.Models
 {
     [DataContract]
     public class Person : ISerializable

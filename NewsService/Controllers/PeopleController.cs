@@ -1,26 +1,24 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using NewsService.Data;
-using NewsService.Models;
 using NewsService.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using BusinessLogic.Data;
+using BusinessLogic.Repositories;
 
 namespace NewsService.Controllers
 {
     [Authorize]
     public class PeopleController : Controller
     {
-        //private readonly NewsletterDBContext _context;
-        private DBRepository _repository;
+        private PersonRepository _repository;
+        private TopicRepository _repositoryTopics;
 
         public PeopleController(NewsletterDBContext context)
         {
-            _repository = new DBRepository(context);    
+            _repository = new PersonRepository(context);
+            _repositoryTopics = new TopicRepository(context);
         }
 
         // GET: People
@@ -48,7 +46,7 @@ namespace NewsService.Controllers
         public async Task<IActionResult> Create()
         {
             PersonViewModel personViewModel = new PersonViewModel();
-            var allTopicsList = await _repository.GetAllTopics();
+            var allTopicsList = await _repositoryTopics.GetAllTopics();
             personViewModel.AllTopics = allTopicsList.Select(o => new SelectListItem
             {
                 Text = o.Name,
@@ -87,7 +85,7 @@ namespace NewsService.Controllers
             {
                 return NotFound();
             }
-            var allTopicsList = await _repository.GetAllTopics();
+            var allTopicsList = await _repositoryTopics.GetAllTopics();
             personViewModel.AllTopics = allTopicsList.Select(o => new SelectListItem
             {
                 Text = o.Name,

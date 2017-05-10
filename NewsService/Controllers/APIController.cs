@@ -1,28 +1,20 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using NewsService.Data;
-using NewsService.Models;
-using Microsoft.AspNetCore.Authorization;
-using System.Net;
+using BusinessLogic.Repositories;
+using BusinessLogic.Data;
 
 namespace NewsService.Controllers
 {
-    
+
     [Produces("application/json")]
     [Route("api")]
     public class APIController : Controller
     {
-        //private readonly NewsletterDBContext _context;
-        private DBRepository _repository;
+        private ApiRepository _repository;
 
         public APIController(NewsletterDBContext context)
         {
-            _repository = new DBRepository(context);
+            _repository = new ApiRepository(context);
         }
 
         //GET: api/Subscribers?topic="meh"&topic="bla"
